@@ -1,4 +1,5 @@
 # Bifrost
+![CI](https://github.com/ewnolin/bifrost-av/actions/workflows/ci.yml/badge.svg)
 
 Open-source age verification layer that lets small game developers comply with upcoming EU rules. Players prove their age with their EU age verification wallet; the game receives a signed yes/no token and never sees personal data.
 
