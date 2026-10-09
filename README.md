@@ -13,3 +13,12 @@ Requires JDK 21.
 ```
 ./gradlew build
 ```
+
+## Contributing
+Code is formatted with Spotless (google-java-format). Before pushing:
+
+```
+./gradlew spotlessApply
+```
+
+CI runs `spotlessCheck` and fails on unformatted code.
