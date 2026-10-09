@@ -1,4 +1,4 @@
-name: claude-code-review.yml
+name: Claude Review
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
