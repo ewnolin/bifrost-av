@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: bifrost-server
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+logging:
+  level:
+    io.github.ewnolin.bifrost: DEBUG

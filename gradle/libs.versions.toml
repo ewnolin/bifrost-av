@@ -1,0 +1,9 @@
+[versions]
+spring-boot = "4.1.1"
+springdoc = "3.1.1"
+
+[libraries]
+springdoc-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
