@@ -3,6 +3,9 @@
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
+# Kotlin
+buildSrc/.kotlin/
+
 # IDEs
 .idea/
 *.iml
