@@ -55,8 +55,7 @@ public class SessionService {
     VerificationSession session = getSession(id);
     try {
       String[] parts = walletResponse.split("\\.");
-      String payload =
-        new String(Base64.getUrlDecoder().decode(parts[1]), StandardCharsets.UTF_8);
+      String payload = new String(Base64.getUrlDecoder().decode(parts[1]), StandardCharsets.UTF_8);
       session.birthDate = extractBirthDate(payload);
       session.status = "VERIFIED";
     } catch (Exception e) {
