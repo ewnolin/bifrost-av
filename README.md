@@ -23,3 +23,21 @@ Code is formatted with Spotless (google-java-format). Before pushing:
 ```
 
 CI runs `spotlessCheck` and fails on unformatted code.
+
+### Git hooks
+
+The repo includes Git hooks that run checks locally, so problems are caught before CI and review:
+
+| Hook | Runs on | Checks |
+|---|---|---|
+| `pre-commit` | `git commit` | Formatting (`spotlessCheck`) |
+| `commit-msg` | `git commit` | Message format, e.g. `feat(server): add endpoint (#12)` |
+| `pre-push` | `git push` | Full build and tests |
+
+Enable them once after cloning:
+
+```
+git config core.hooksPath .githooks
+```
+
+If a check fails, fix the issue (for formatting: `./gradlew spotlessApply`) and try again. In an emergency, skip the hooks with `--no-verify`.
