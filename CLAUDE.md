@@ -27,6 +27,9 @@ server over HTTP.
 - Swallowed exceptions, broad `catch (Exception e)`, returning `null`
 - New Spring or heavy dependencies in `bifrost-verify`
 - Actuator endpoints exposed beyond `health`; wildcard CORS
+- Mutable DTOs with public fields instead of `record`; status values as strings instead of enums
+- Magic numbers instead of named constants
+- REST endpoints without springdoc-openapi annotations
 
 **Tests and docs**
 - New or changed logic without tests, especially for error paths
@@ -43,5 +46,6 @@ server over HTTP.
 
 ## Review style
 - Prefix every comment with **blocking:** or **suggestion:**
+- Use **blocking:** only for privacy, security and correctness issues; everything else is **suggestion:**
 - Explain *why*, and name the rule it breaks
 - Prefer a few high-signal comments over many small ones
