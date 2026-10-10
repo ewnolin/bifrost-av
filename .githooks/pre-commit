@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# pre-commit — Lint/inspect staged changes before a commit is created.
+# When: On `git commit`, before the message editor opens.
+# Args: None. Operates on the staged (index) contents.
+# Exit: Non-zero aborts the commit.
+echo "pre-commit: checking formatting..."
+./gradlew spotlessCheck -q || {
+  echo ""
+  echo "Formatting issues found. Fix with: ./gradlew spotlessApply"
+  exit 1
+}
+exit 0

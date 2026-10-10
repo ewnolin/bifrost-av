@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# commit-msg — Validate or normalize the commit message.
+# When: On `git commit`, after the message is composed, before the commit is finalized.
+# Args: $1 = path to the commit-message file.
+# Exit: Non-zero aborts the commit.
+msg=$(head -n1 "$1")
+
+# Allow commits git generates itself
+echo "$msg" | grep -Eq '^(Merge|Revert) ' && exit 0
+
+pattern='^(feat|fix|docs|chore|test|ci|style|refactor)(\([a-z0-9-]+\))?: .+ \(#[0-9]+\)$'
+if ! echo "$msg" | grep -Eq "$pattern"; then
+  echo "Invalid commit message:"
+  echo "  $msg"
+  echo "Expected e.g.: prefix(module): short description message (#issue)"
+  exit 1
+fi
+exit 0
