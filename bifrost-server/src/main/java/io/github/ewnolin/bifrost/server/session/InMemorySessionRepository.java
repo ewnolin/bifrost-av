@@ -5,6 +5,10 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 
+/**
+ * In-memory {@link SessionRepository}; sessions are lost on restart and not shared across
+ * instances.
+ */
 @Repository
 public class InMemorySessionRepository implements SessionRepository {
 
