@@ -1,4 +1,4 @@
-# 0005. Seession design
+# 0005. Session design
 
 - **Status:** Proposed
 - **Date:** 2026-10-12
