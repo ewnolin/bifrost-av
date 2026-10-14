@@ -49,4 +49,50 @@ public record VerificationSession(
     Objects.requireNonNull(ttl, "ttl");
     return new VerificationSession(id, minAge, SessionStatus.PENDING, now, now.plus(ttl));
   }
+
+  /**
+   * Returns a copy of this session with a different status.
+   *
+   * @param newStatus the status of the copy
+   * @return a new session; this one is unchanged
+   */
+  public VerificationSession withStatus(SessionStatus newStatus) {
+    return new VerificationSession(id, minAge, newStatus, createdAt, expiresAt);
+  }
+
+  /**
+   * Marks the session expired if it is still pending and its time is up.
+   *
+   * @param now the current time
+   * @return an expired copy if due, otherwise this session
+   */
+  public VerificationSession expireIfDue(Instant now) {
+    if (status == SessionStatus.PENDING && !now.isBefore(expiresAt)) {
+      return withStatus(SessionStatus.EXPIRED);
+    }
+    return this;
+  }
+
+  /**
+   * Completes a pending session with a verification outcome.
+   *
+   * @param outcome {@link SessionStatus#VERIFIED} or {@link SessionStatus#FAILED}
+   * @param now the current time
+   * @return a completed copy of this session
+   * @throws IllegalArgumentException if {@code outcome} is not VERIFIED or FAILED
+   * @throws SessionStateException if the session has expired or was already completed
+   */
+  public VerificationSession complete(SessionStatus outcome, Instant now) {
+    if (outcome != SessionStatus.VERIFIED && outcome != SessionStatus.FAILED) {
+      throw new IllegalArgumentException("outcome must be VERIFIED or FAILED");
+    }
+    VerificationSession current = expireIfDue(now);
+    if (current.status == SessionStatus.EXPIRED) {
+      throw new SessionStateException("Session has expired");
+    }
+    if (current.status != SessionStatus.PENDING) {
+      throw new SessionStateException("Session was already completed");
+    }
+    return withStatus(outcome);
+  }
 }

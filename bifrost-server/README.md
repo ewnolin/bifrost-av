@@ -15,6 +15,18 @@ Spring Boot verification service.
 
 ## API
 
+### Session lifecycle
+A session starts as `PENDING` and ends in exactly one final state:
+
+| Status | Meaning |
+|---|---|
+| `PENDING` | Waiting for the player to verify |
+| `VERIFIED` | The player proved the minimum age |
+| `FAILED` | Verification did not succeed |
+| `EXPIRED` | Not completed within `bifrost.session.ttl` |
+
+Final states never change. A session can be completed only once; completing an expired or already-completed session returns `409`.
+
 ### Create a session
 `POST /sessions` starts a verification session for a minimum age.
 

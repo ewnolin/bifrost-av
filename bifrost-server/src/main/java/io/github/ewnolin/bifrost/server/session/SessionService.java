@@ -35,17 +35,6 @@ public class SessionService {
   }
 
   /**
-   * Looks up a session by ID.
-   *
-   * @param id of the session
-   * @return the session
-   * @throws SessionNotFoundException if no session has this ID
-   */
-  public VerificationSession getSession(String id) {
-    return repository.findById(id).orElseThrow(SessionNotFoundException::new);
-  }
-
-  /**
    * Starts a new verification session.
    *
    * @param minAge the minimum age the player must prove
@@ -61,5 +50,35 @@ public class SessionService {
         VerificationSession.newPending(
             idGenerator.generate(), minAge, Instant.now(clock), properties.ttl());
     return repository.save(session);
+  }
+
+  /**
+   * Looks up a session by ID, marking it expired if its time is up.
+   *
+   * @param id the session ID
+   * @return the session with its current status
+   * @throws SessionNotFoundException if no session has this ID
+   */
+  public VerificationSession getSession(String id) {
+    Instant now = Instant.now(clock);
+    return repository
+        .update(id, session -> session.expireIfDue(now))
+        .orElseThrow(SessionNotFoundException::new);
+  }
+
+  /**
+   * Completes a session with a verification outcome. Each session can be completed only once.
+   *
+   * @param id the session ID
+   * @param outcome {@link SessionStatus#VERIFIED} or {@link SessionStatus#FAILED}
+   * @return the completed session
+   * @throws SessionNotFoundException if no session has this ID
+   * @throws SessionStateException if the session has expired or was already completed
+   */
+  public VerificationSession completeSession(String id, SessionStatus outcome) {
+    Instant now = Instant.now(clock);
+    return repository
+        .update(id, session -> session.complete(outcome, now))
+        .orElseThrow(SessionNotFoundException::new);
   }
 }
