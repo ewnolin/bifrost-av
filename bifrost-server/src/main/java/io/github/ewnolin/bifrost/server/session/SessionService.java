@@ -35,6 +35,17 @@ public class SessionService {
   }
 
   /**
+   * Looks up a session by ID.
+   *
+   * @param id of the session
+   * @return the session
+   * @throws SessionNotFoundException if no session has this ID
+   */
+  public VerificationSession getSession(String id) {
+    return repository.findById(id).orElseThrow(SessionNotFoundException::new);
+  }
+
+  /**
    * Starts a new verification session.
    *
    * @param minAge the minimum age the player must prove
