@@ -50,6 +50,20 @@ Invoke-RestMethod -Method Post -Uri http://localhost:8080/sessions `
   -ContentType "application/json" -Body '{"minAge": 15}'
 ```
 
+### Get session status
+`GET /sessions/{sessionId}` returns the current state of a session. Game clients poll this until the status is no longer `PENDING`.
+
+Response: `200 OK`, with the same body as create.
+
+| Status | When |
+|---|---|
+| `200` | Session found |
+| `404` | No session with this ID (including malformed IDs) |
+
+```
+curl http://localhost:8080/sessions/<sessionId>
+```
+
 ### Errors
 All errors are returned as [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) ProblemDetail (`application/problem+json`):
 ```json

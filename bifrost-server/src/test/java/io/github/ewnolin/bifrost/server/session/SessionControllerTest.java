@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -80,5 +81,27 @@ class SessionControllerTest {
             post("/sessions").contentType(MediaType.APPLICATION_JSON).content("{\"minAge\": 21}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.detail").value("minAge must be one of [13, 15, 16, 18]"));
+  }
+
+  @Test
+  void get_withExistingId_returns200WithBody() throws Exception {
+    when(sessionService.getSession("abc123")).thenReturn(session("abc123", 15));
+
+    mockMvc
+        .perform(get("/sessions/abc123"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.sessionId").value("abc123"))
+        .andExpect(jsonPath("$.status").value("PENDING"))
+        .andExpect(jsonPath("$.*", hasSize(4)));
+  }
+
+  @Test
+  void get_withUnknownId_returns404ProblemDetail() throws Exception {
+    when(sessionService.getSession("unknown")).thenThrow(new SessionNotFoundException());
+
+    mockMvc
+        .perform(get("/sessions/unknown"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.title").value("Session not found"));
   }
 }

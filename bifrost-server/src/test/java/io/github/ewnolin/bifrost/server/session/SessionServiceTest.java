@@ -52,4 +52,16 @@ class SessionServiceTest {
 
     assertEquals("minAge must be one of [13, 15, 16, 18]", ex.getMessage());
   }
+
+  @Test
+  void getSession_withExistingId_returnsSession() {
+    VerificationSession created = service.createSession(15);
+
+    assertEquals(created, service.getSession(created.id()));
+  }
+
+  @Test
+  void getSession_withUnknownId_throwsNotFound() {
+    assertThrows(SessionNotFoundException.class, () -> service.getSession("does-not-exist"));
+  }
 }
