@@ -12,7 +12,8 @@ How to add Bifrost age verification to your game.
   - `VERIFIED`: the player meets the minimum age
   - `FAILED`: verification did not succeed
   - `EXPIRED`: the player did not finish in time; start a new session
-4. **Never personal data.** Bifrost only ever tells your game the result. It never sends a name, birthdate or ID document.
+4. **Receive a signed result** *(coming in Epic B)*. Once verified, your game will receive a short-lived token signed by Bifrost containing only the age claim (e.g. `age_over_15: true`). Your game or server checks the signature with Bifrost's public key, so the result can't be forged. **Until then, the status response is for development only and must not be trusted in production.**
+5. **Never personal data.** Bifrost only ever tells your game the result. It never sends a name, birthdate or ID document.
 
 The full API reference, with examples, is in Swagger UI at `/swagger-ui.html` on the server.
 
