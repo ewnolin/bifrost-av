@@ -1,4 +1,4 @@
-# 0007. Session lifecycle
+# 0007. Session lifecycle: lazy expiry and atomic updates
 
 - **Status:** Accepted
 - **Date:** 2026-10-14
@@ -6,18 +6,27 @@
 
 ## Context
 
-<!-- What problem or question are we facing? What forces are at play (technical, legal, time, team)? -->
-There is a risk of two request arriving at the same moment can both read `PENDING` relating to a check-then-act
-race which means one session gets completed twice.
+A session moves from `PENDING` to exactly one final state (`VERIFIED`, `FAILED` or `EXPIRED`) and must never change
+again. Two problems threaten this:
+
+- **Race condition:** if two requests complete the same session at the same moment, both can read `PENDING`, both pass
+the check, and both write. The session is then completed twice, which breaks single-use completion and enables replay.
+- **Expiry:** sessions must expire after the configured TTL, but running a timer per session or a background job adds complexity.
 
 ## Decision
 
-<!-- What did we decide? State it in one or two sentences, in active voice: "We will …". -->
-The fix is to make the read, check and write in one atomic step. We will do this by using lazy expiry and
-`computeIfPresent` function which functions as a keymap which detects if the key exists and is a non-null it fires
-the operations simultaneously.
+- We will update sessions atomically with `ConcurrentHashMap.computeIfPresent`. It locks the single session while the
+read, check and write run, so concurrent updates to the same session happen one after another, never at the same time.
+If the update throws, the session is left unchanged.
+- We will expire sessions lazily: whenever a session is read or completed, a `PENDING` session at or past `expiresAt`
+becomes `EXPIRED`. No scheduler is used.
+- The state rules live in `VerificationSession` (`expireIfDue`, `complete`); `SessionService` only supplies the current
+time and calls the atomic update.
 
 ## Consequences
 
-<!-- What becomes easier or harder because of this decision? Include trade-offs and follow-up work. -->
-No background scheduler is needed and expired sessions stay in memory until a future cleanup is issued.
+- Completing a session twice is impossible, even under concurrent requests (covered by a repeated multithreaded test).
+- No background scheduler or timers are needed.
+- Expired sessions stay in memory until someone reads them or a future cleanup job removes them.
+- Atomicity only holds within one server instance. Running several instances requires shared storage with its own atomic
+updates (e.g. a database transaction), as already noted in ADR 0005.
