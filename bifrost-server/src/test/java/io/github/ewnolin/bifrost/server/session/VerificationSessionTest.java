@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class VerificationSessionTest {
@@ -64,5 +65,45 @@ public class VerificationSessionTest {
   void newPending_withNullTtl_throws() {
     assertThrows(
         NullPointerException.class, () -> VerificationSession.newPending("abc", 15, NOW, null));
+  }
+
+  @Test
+  void expireIfDue_justBeforeExpiry_staysPending() {
+    VerificationSession session = VerificationSession.newPending("abc", 15, NOW, TTL);
+
+    assertEquals(SessionStatus.PENDING, session.expireIfDue(NOW.plus(TTL).minusNanos(1)).status());
+  }
+
+  @Test
+  void expireIfDue_exactlyAtExpiry_isExpired() {
+    VerificationSession session = VerificationSession.newPending("abc", 15, NOW, TTL);
+
+    assertEquals(SessionStatus.EXPIRED, session.expireIfDue(NOW.plus(TTL)).status());
+  }
+
+  @Test
+  void expireIfDue_onCompletedSession_keepsStatus() {
+    VerificationSession verified =
+        VerificationSession.newPending("abc", 15, NOW, TTL).withStatus(SessionStatus.VERIFIED);
+
+    assertEquals(SessionStatus.VERIFIED, verified.expireIfDue(NOW.plus(TTL)).status());
+  }
+
+  @ParameterizedTest
+  @EnumSource(
+      value = SessionStatus.class,
+      names = {"VERIFIED", "FAILED"})
+  void complete_pendingSession_takesOutcome(SessionStatus outcome) {
+    VerificationSession session = VerificationSession.newPending("abc", 15, NOW, TTL);
+
+    assertEquals(outcome, session.complete(outcome, NOW).status());
+  }
+
+  @Test
+  void complete_withPendingAsOutcome_throws() {
+    VerificationSession session = VerificationSession.newPending("abc", 15, NOW, TTL);
+
+    assertThrows(
+        IllegalArgumentException.class, () -> session.complete(SessionStatus.PENDING, NOW));
   }
 }

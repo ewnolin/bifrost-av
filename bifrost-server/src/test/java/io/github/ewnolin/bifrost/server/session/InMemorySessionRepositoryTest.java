@@ -1,8 +1,6 @@
 package io.github.ewnolin.bifrost.server.session;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -47,5 +45,36 @@ class InMemorySessionRepositoryTest {
     repository.save(verified);
 
     assertEquals(Optional.of(verified), repository.findById("abc"));
+  }
+
+  @Test
+  void update_existingSession_storesResult() {
+    repository.save(session("abc", SessionStatus.PENDING));
+
+    repository.update("abc", s -> s.withStatus(SessionStatus.VERIFIED));
+
+    assertEquals(SessionStatus.VERIFIED, repository.findById("abc").orElseThrow().status());
+  }
+
+  @Test
+  void update_unknownId_returnsEmpty() {
+    assertTrue(repository.update("missing", s -> s).isEmpty());
+  }
+
+  @Test
+  void update_whenUpdaterThrows_leavesSessionUnchanged() {
+    VerificationSession original = session("abc", SessionStatus.PENDING);
+    repository.save(original);
+
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            repository.update(
+                "abc",
+                s -> {
+                  throw new IllegalStateException("boom");
+                }));
+
+    assertEquals(Optional.of(original), repository.findById("abc"));
   }
 }
