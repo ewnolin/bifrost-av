@@ -2,9 +2,11 @@ package io.github.ewnolin.bifrost.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 /** Entry point for the Bifrost verification service */
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class BifrostServerApplication {
 
   /**

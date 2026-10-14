@@ -14,3 +14,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issue and pull request templates, protected `main` branch (#5)
 - Spring Boot server skeleton with health endpoint and OpenAPI docs (#6)
 - Documentation structure: ADRs, integration guide, changelog (#7)
+---
+- `POST /sessions` endpoint to start a verification session; allowed ages and session TTL are configurable (#30)
