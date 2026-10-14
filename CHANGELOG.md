@@ -19,3 +19,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `GET /sessions/{id}` endpoint to poll a session's status (#31)
 - Session expiry and single-use completion (#32)
 - Dev-only mock verifier to approve or reject sessions by hand (#33)
+- OpenAPI documentation for session and mock verifier endpoints (#34)
