@@ -89,6 +89,23 @@ All errors are returned as [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) Pr
 ```
 Validation errors also include an `errors` object naming each invalid field. Error responses never contain stack traces or internal details.
 
+### Mock verifier (dev profile only)
+Stands in for real EU wallet verification during development. **Never available in production:** these endpoints only exist when the app runs with the `dev` profile, and a warning is logged at startup.
+
+| Endpoint | Effect |
+|---|---|
+| `POST /dev/sessions/{sessionId}/approve` | Session becomes `VERIFIED` |
+| `POST /dev/sessions/{sessionId}/reject` | Session becomes `FAILED` |
+
+Unknown sessions return `404`; expired or already-completed sessions return `409`.
+
+Full flow:
+```
+curl -X POST http://localhost:8080/sessions -H "Content-Type: application/json" -d '{"minAge": 15}'
+curl -X POST http://localhost:8080/dev/sessions/<sessionId>/approve
+curl http://localhost:8080/sessions/<sessionId>
+```
+
 ## Configuration
 
 | Property | Default | Meaning |
