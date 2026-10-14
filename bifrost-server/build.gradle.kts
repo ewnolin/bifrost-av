@@ -1,5 +1,11 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
+version = "0.1.0"
+
+springBoot {
+  buildInfo()
+}
+
 plugins {
   id("bifrost.java-conventions")
   alias(libs.plugins.spring.boot)

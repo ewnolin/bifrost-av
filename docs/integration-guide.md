@@ -6,11 +6,16 @@ How to add Bifrost age verification to your game.
 
 ## How it works
 
-1. Your game asks the Bifrost server to start a verification session.
-2. The player scans a QR code (or opens a link) with their EU age verification or digital identity wallet.
-3. The wallet sends a zero-knowledge proof of age to Bifrost. No name, birthdate or ID reaches you.
-4. Your game receives a short-lived signed token such as `age_over_15: true`.
-5. Your game, or your own server, checks the token's signature with Bifrost's public key.
+1. **Start a session.** Your game calls `POST /sessions` with the minimum age it needs (e.g. `{"minAge": 15}`). The response contains a `sessionId` and a `Location` header.
+2. **The player verifies.** The player proves their age with their EU age verification wallet. *(Until real wallet support lands, use the dev-only mock verifier to approve sessions by hand.)*
+3. **Poll the status.** Your game calls `GET /sessions/{sessionId}` every one or two seconds until the status is no longer `PENDING`:
+  - `VERIFIED`: the player meets the minimum age
+  - `FAILED`: verification did not succeed
+  - `EXPIRED`: the player did not finish in time; start a new session
+4. **Receive a signed result** *(coming in Epic B)*. Once verified, your game will receive a short-lived token signed by Bifrost containing only the age claim (e.g. `age_over_15: true`). Your game or server checks the signature with Bifrost's public key, so the result can't be forged. **Until then, the status response is for development only and must not be trusted in production.**
+5. **Never personal data.** Bifrost only ever tells your game the result. It never sends a name, birthdate or ID document.
+
+The full API reference, with examples, is in Swagger UI at `/swagger-ui.html` on the server.
 
 ## Install
 
