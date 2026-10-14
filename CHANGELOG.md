@@ -16,3 +16,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation structure: ADRs, integration guide, changelog (#7)
 ---
 - `POST /sessions` endpoint to start a verification session; allowed ages and session TTL are configurable (#30)
+- `GET /sessions/{id}` endpoint to poll a session's status (#31)

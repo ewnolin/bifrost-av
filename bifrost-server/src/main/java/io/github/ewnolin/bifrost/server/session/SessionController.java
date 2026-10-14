@@ -3,10 +3,7 @@ package io.github.ewnolin.bifrost.server.session;
 import jakarta.validation.Valid;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /** HTTP endpoints for verification sessions. */
 @RestController
@@ -35,5 +32,16 @@ public class SessionController {
     VerificationSession session = sessionService.createSession(request.minAge());
     return ResponseEntity.created(URI.create("/sessions/" + session.id()))
         .body(SessionResponse.from(session));
+  }
+
+  /**
+   * Returns the current state of a session.
+   *
+   * @param id of the session from the URL
+   * @return the session
+   */
+  @GetMapping("/{id}")
+  public SessionResponse get(@PathVariable String id) {
+    return SessionResponse.from(sessionService.getSession(id));
   }
 }
