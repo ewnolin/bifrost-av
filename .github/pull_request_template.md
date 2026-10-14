@@ -1,18 +1,32 @@
 Closes #
 
 ## What changed
-<!-- One or two sentences -->
+<!-- 1–3 bullets. What does this PR add or change? -->
+-
+
+## Deferred
+<!-- Anything intentionally left for another issue, so reviewers (and Claude) don't flag it. Delete if none. -->
+-
 
 ## How to test
-1.
+- [ ] CI is green (formatting, build, tests)
+- [ ] New/changed behavior is covered by the tests in this PR
+<!-- Only add steps below if a reviewer must try something by hand, e.g. an endpoint call from the README -->
 
 ## Review checklist
-- [ ] Branch, commits and PR title follow the naming rules and reference the issue
-- [ ] CI is green (build, tests, formatting)
-- [ ] Every acceptance criterion in the issue is met and was tested by the reviewer
-- [ ] New or changed logic has unit tests, including error cases
-- [ ] Code follows the Code Conventions
-- [ ] Public classes and methods are documented; READMEs and API docs updated
-- [ ] No secrets, keys or personal data in code, logs or test fixtures
-- [ ] Tokens and proofs are validated, never trusted blindly
+**Scope**
+- [ ] Matches the issue's acceptance criteria, nothing more
+- [ ] Naming: branch, commits and title reference the issue
+
+**Code**
+- [ ] Follows the Code Conventions (layering, injection, records, no `null` returns)
+- [ ] Error cases are tested, not only the happy path
 - [ ] No debug code, commented-out code, or TODOs without an issue number
+
+**Privacy & security**
+- [ ] No personal data, tokens or secrets in code, logs, responses or tests
+- [ ] Inputs and tokens are validated, never trusted blindly
+
+**Docs**
+- [ ] Javadoc on public classes and methods
+- [ ] README / CHANGELOG / ADR updated if behavior or decisions changed
