@@ -18,8 +18,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
- * Turns exceptions from any controller into RFC 9457 {@link ProblemDetail} responses, so every
- * API error has the same shape and never exposes internal details.
+ * Turns exceptions from any controller into RFC 9457 {@link ProblemDetail} responses, so every API
+ * error has the same shape and never exposes internal details.
  */
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -69,22 +69,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
   public ProblemDetail handleUnexpected(Exception ex) {
     log.error("Unhandled exception", ex);
     return problem(
-      HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", "An unexpected error occurred.");
+        HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", "An unexpected error occurred.");
   }
 
   /** Adds the names of invalid fields to Bean Validation errors. */
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
-    MethodArgumentNotValidException ex,
-    HttpHeaders headers,
-    HttpStatusCode status,
-    WebRequest request) {
+      MethodArgumentNotValidException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
     ProblemDetail problem = ex.getBody();
     problem.setTitle("Invalid request");
     Map<String, String> errors = new LinkedHashMap<>();
     ex.getBindingResult()
-      .getFieldErrors()
-      .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        .getFieldErrors()
+        .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
     problem.setProperty("errors", errors);
     return handleExceptionInternal(ex, problem, headers, status, request);
   }

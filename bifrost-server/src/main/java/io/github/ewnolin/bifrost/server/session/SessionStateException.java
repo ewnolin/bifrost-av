@@ -1,8 +1,8 @@
 package io.github.ewnolin.bifrost.server.session;
 
 /**
- * Thrown when a session cannot make the requested state change, for example because it has
- * expired or was already completed. Mapped to HTTP 409.
+ * Thrown when a session cannot make the requested state change, for example because it has expired
+ * or was already completed. Mapped to HTTP 409.
  */
 public class SessionStateException extends RuntimeException {
 
