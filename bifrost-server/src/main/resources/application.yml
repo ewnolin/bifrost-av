@@ -12,6 +12,10 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
+bifrost:
+  session:
+    ttl: 5m
+    allowed-min-ages: [13, 15, 16, 18]
 ---
 spring:
   config:
